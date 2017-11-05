@@ -1,3 +1,5 @@
+# Metadata is sourced from 29bc.com/plus/youku since it displays improperly on the desktop version of Youku.
+
 import sys
 import urllib.request
 from bs4 import BeautifulSoup
