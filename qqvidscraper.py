@@ -36,7 +36,7 @@ origurl = get_origurl.text.strip()
 get_title = soup.find('meta', attrs={'itemprop': 'name'})
 title = get_title.text.strip()
 
-print("Uploader: " + soup2new + "(Channel: " + get_userlink.get('href') + ")")
+print("Uploader: " + soup2new + " (Channel: " + get_userlink.get('href') + ")")
 print("Upload date: " + get_uploaddate["content"])
 print("Description: " + str(get_desc["content"])) # checks the value of content, within meta name=description
 print("Original url: " + str(get_origurl["content"]))
