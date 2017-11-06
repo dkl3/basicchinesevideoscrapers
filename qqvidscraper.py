@@ -22,7 +22,7 @@ soup2 = BeautifulSoup(page2, 'html.parser')
 soup2_title = soup2.html.head.title.text.strip()
 soup2_uni = soup2_title
 
-soup2new = soup2_uni.replace('- 视频列表', '', 1)
+soup2new = soup2_uni.replace('的个人频道 - 视频列表', '', 1)
 
 get_desc = soup.find("meta", {"name": "description"})
 desc = get_desc.text.strip()
