@@ -1,54 +1,76 @@
-import sys
-import urllib.request
-import re
+#Forked back from AcolyteGeometry.
+
+from MenuT import MenuT
+import json
 import string
+import sys
 import requests
+import re
 from bs4 import BeautifulSoup
 
-type = input("Enter a QQ Video identifier: ")
-url = 'https://v.qq.com/x/page/' + type + '.html'
-page = urllib.request.urlopen(url)
-# page.geturl() # checks for final url after redirect
-soup = BeautifulSoup(page, 'html.parser')
+class qqVidScraper():
 
-get_uploaddate = soup.find('meta', attrs={'itemprop': 'datePublished'})
-uploaddate = get_uploaddate.text.strip()
+    baseurl = 'https://v.qq.com/x/page/'
+    fnameappend = '-metadata.json'
+    jsonenc = json.JSONEncoder()
+    menut = MenuT()
+    menu = [["QQ Video Scraper","Select an option:"],["Scrape Video", 1], ["Exit", 2]]
+    menuid = [["QQ Video Scraper", "Input video ID:"]]
 
-get_userlink = soup.find("a", href=re.compile("^http://v.qq.com/vplus/[a-z0-9]*$")) # gets the channel url link
-userlink = get_userlink.text
+    def showMenu(self):
+        mopt = self.menut.stoi(self.menut.showMenu(self.menu))
+        if(mopt == 1):
+            self.vididMenu()
+        elif(mopt == 2):
+            exit(0)
 
-page2 = urllib.request.urlopen(get_userlink.get('href'))
-soup2 = BeautifulSoup(page2, 'html.parser')
-soup2_title = soup2.html.head.title.text.strip()
-soup2_uni = soup2_title
+    def vididMenu(self):
+        mopt = self.menut.showMenu(self.menuid)
+        self.writeFile(self.scrapeVideo(mopt))
+        self.showMenu()
 
-soup2new = soup2_uni.replace('的个人频道 - 视频列表', '', 1)
+    def scrapeVideo(self, vidid, stdout = True):
+        dict = {'vidid': vidid, \
+                'title': None, \
+                'desc': None, \
+                'userlink':None,\
+                'username':None, \
+                'origurl':None,\
+                'date':None}
+        url = self.baseurl + vidid + '.html'
+        page = requests.get(url, timeout=60).content
+        # page.geturl() # checks for final url after redirect
+        soup = BeautifulSoup(page, 'html.parser')
 
-get_desc = soup.find("meta", {"name": "description"})
-desc = get_desc.text.strip()
+        dict['username'] = soup.find('span', attrs={'class': 'user_name'}).text.strip()
 
-get_username = soup.find('span', attrs={'class': 'user_name'})
-username = get_username.text.strip()
+        dict['userlink'] = soup.find("a", href=re.compile("^http://v.qq.com/vplus/[a-z0-9]*$"))['href']
 
-get_origurl = soup.find('meta', attrs={'itemprop': 'url'})
-origurl = get_origurl.text.strip()
+        get_uploaddate = soup.find('span', attrs={'class': 'date _date'})
+        uploaddate = get_uploaddate.text.strip()
+        dict['origurl'] = soup.find('meta', attrs={'itemprop': 'url'})['content']
+        dict['title'] = soup.find('meta', attrs={'itemprop': 'name'})['content']
+        dict['desc'] = soup.find("meta", {"name": "description"})['content']
 
-get_title = soup.find('meta', attrs={'itemprop': 'name'})
-title = get_title.text.strip()
+        page = requests.get(dict['userlink'], timeout=60).content
+        if(stdout):
+            print("Uploader: " + dict['username'])
+            print("Channel: " + dict['userlink'])
+            print("Upload Date: " + str(uploaddate))
+            print("Description: " + str(dict['desc'])) # checks the value of content, within meta name=description
+            print("Original URL: " + str(dict['origurl']))
 
-print("Uploader: " + soup2new + " (Channel: " + get_userlink.get('href') + ")")
-print("Upload date: " + get_uploaddate["content"])
-print("Description: " + str(get_desc["content"])) # checks the value of content, within meta name=description
-print("Original url: " + str(get_origurl["content"]))
+        return dict
 
-uploader_output = "Uploader: " + soup2new + "(Channel: " + get_userlink.get('href') + ")"
-uploaded_output = "Upload date: " + get_uploaddate["content"]
-desc_output = "Description: " + get_desc["content"]
-source_output = "Original url: " + get_origurl["content"]
+    def writeFile(self, data):
+        filename = data['title'] + "-" + data['vidid'] + self.fnameappend
+        print(filename)
+        print(data)
+        f = open(filename, 'w')
+        f.write(self.getJSON(data))
+        f.close()
 
-textfile = get_title["content"] + "-" + type + '-metadata.txt'
+    def getJSON(self, data):
+        return self.jsonenc.encode({data['vidid']: data})
 
-variableprintstring = (uploader_output + "\n" + uploaded_output + "\n" + desc_output + "\n" + source_output)
-f = open( textfile, 'w' )
-f.write(variableprintstring + "\n")
-f.close()
+qqVidScraper().showMenu()
