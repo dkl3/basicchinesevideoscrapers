@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 import urllib.request
 import wget
 from bs4 import BeautifulSoup
@@ -14,19 +15,26 @@ origurl = soup.find('meta', attrs={'property': 'og:url'})['content']
 description = soup.find('meta', attrs={'itemprop': 'description'})['content']
 uploaded = soup.find('meta', attrs={'itemprop': 'uploadDate'})['content']
 
-print('Video name: ',title)
+retrieve_uploader = soup.find('a', attrs={'class': 'mod-dyDs-name-link'})
+uploader = retrieve_uploader['title']
+channel = retrieve_uploader['href']
+
+print('Uploader: ', uploader)
+print('Channel link: ', channel)
 print('Description: ', description)
 print('Upload date: ',uploaded)
 print('Original url: ',origurl)
 
 titleout = 'Video title: ' + title
 descout = 'Description: ' + description
+uploaderout = 'Uploader: ' + uploader
 uploaddateout = 'Upload date: ' + uploaded
 origurlout = 'Original url: ' + origurl
 
 print ('Downloading thumbnail...')
 thumbloc = soup.find('meta', attrs={'property': 'og:image'})['content']
 thumbdown = wget.download(thumbloc)
+os.rename(thumbdown,title+'.jpg')
 
 textfile = title + "-" + vidid + '-metadata.txt'
 textfile = textfile.translate(str.maketrans("*/\\<>:\"|","--------")).strip()
