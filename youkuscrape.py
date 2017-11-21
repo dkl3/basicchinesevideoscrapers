@@ -13,14 +13,15 @@ soup = BeautifulSoup(page, 'html.parser')
 
 desc = soup.find('div', attrs={'class': 'panel-body info-content'}).text.strip()
 
-info = soup.find('ul', attrs={'class': 'list-group info-content'}).text.strip()
+get_info = soup.find('ul', attrs={'class': 'list-group info-content'})
+
+info = get_info.text.strip()
 
 uploaded = get_info.find("span", {"class": "v-published", "yk": "video-published"}).text.strip()
 
 uploader = get_info.find("a", {"class": "v-user", "yk": "user-name"}).text.strip()
 
-get_title = soup.find("strong", {"class": "v-title vtitle", "yk": "video-title"})
-title = get_title.text.strip()
+title = soup.find("strong", {"class": "v-title vtitle", "yk": "video-title"}).text.strip()
 
 source = 'http://v.youku.com/v_show/id_' + vidid + '.html'
 
