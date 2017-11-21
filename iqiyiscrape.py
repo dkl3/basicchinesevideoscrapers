@@ -1,4 +1,5 @@
 import sys
+import os
 import urllib.request
 import wget
 from bs4 import BeautifulSoup
@@ -33,3 +34,7 @@ variableprintstring = (titleout + "\n" + descout + "\n" + uploaddateout + "\n" +
 f = open( textfile, 'w' )
 f.write(variableprintstring + "\n")
 f.close()
+
+print('\n' + 'Downloading video...')
+os.system('youtube-dl ' + url + ' -q')
+print('Done!')
