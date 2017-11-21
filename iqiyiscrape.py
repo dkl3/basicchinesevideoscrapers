@@ -26,9 +26,10 @@ print('Description: ', description)
 print('Upload date: ',uploaded)
 print('Original url: ',origurl)
 
-titleout = 'Video title: ' + title
-descout = 'Description: ' + description
+titleout = 'Title: ' + title
 uploaderout = 'Uploader: ' + uploader
+channelout = 'Channel link: ' + channel
+descout = 'Description: ' + description
 uploaddateout = 'Upload date: ' + uploaded
 origurlout = 'Original url: ' + origurl
 
@@ -39,7 +40,7 @@ os.rename(thumbdown,title+'.jpg')
 
 textfile = title + "-" + vidid + '-metadata.txt'
 textfile = textfile.translate(str.maketrans("*/\\<>:\"|","--------")).strip()
-variableprintstring = (titleout + "\n" + descout + "\n" + uploaddateout + "\n" + origurlout + "\n")
+variableprintstring = (titleout + "\n" + uploaderout + "\n" + channelout + "\n" + descout + "\n" + uploaddateout + "\n" + origurlout)
 f = open( textfile, 'w' )
 f.write(variableprintstring + "\n")
 f.close()

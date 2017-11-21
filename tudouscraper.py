@@ -18,12 +18,14 @@ channellink = 'http:' + uploader['href']
 description = soup.find('div', attrs={'class': 'td-play__videoinfo__details-box__desc'}).text.strip()
 uploaddate = soup.find('meta', attrs={'name': 'publishedtime'})['content']
 
+print('Title: ' + title)
 print('Uploader: ' + uploadername)
 print('Channel link: ' + channellink)
 print('Description: ' + description)
 print('Upload date: ' + uploaddate)
 print('Original url: ' + url)
 
+titleout = 'Title: ' + title
 uploaderout = 'Uploader: ' + uploadername
 channelout = 'Channel: ' + channellink
 descout = 'Description: ' + description
@@ -37,7 +39,7 @@ os.rename(thumbdown,title+'.jpg')
 
 textfile = title + "-" + vidid + '-metadata.txt'
 textfile = textfile.translate(str.maketrans("*/\\<>:\"|","--------")).strip()
-variableprintstring = (uploaderout + "\n" + channelout + "\n" + descout + "\n" + uploadout + "\n" + urlout)
+variableprintstring = (titleout + "\n" + uploaderout + "\n" + channelout + "\n" + descout + "\n" + uploadout + "\n" + urlout)
 f = open( textfile, 'w' )
 f.write(variableprintstring + "\n")
 f.close()
