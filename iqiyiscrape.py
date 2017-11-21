@@ -44,5 +44,5 @@ f.write(variableprintstring + "\n")
 f.close()
 
 print('\n' + 'Downloading video...')
-os.system('youtube-dl ' + url + ' -q')
+os.system('youtube-dl ' + url + ' -q --retries 15')
 print('Done!')
