@@ -12,13 +12,14 @@ soup = BeautifulSoup(page, 'html.parser')
 
 title = soup.find('meta', attrs={'itemprop': 'name'})['content']
 origurl = soup.find('meta', attrs={'property': 'og:url'})['content']
-description = soup.find('meta', attrs={'itemprop': 'description'})['content']
+description = soup.find('p', attrs={'id': 'widget-vshort-lesswrap'}).text.strip()
 uploaded = soup.find('meta', attrs={'itemprop': 'uploadDate'})['content']
 
 retrieve_uploader = soup.find('a', attrs={'class': 'mod-dyDs-name-link'})
 uploader = retrieve_uploader['title']
 channel = retrieve_uploader['href']
 
+print('Title: ', title)
 print('Uploader: ', uploader)
 print('Channel link: ', channel)
 print('Description: ', description)
