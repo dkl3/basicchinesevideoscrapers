@@ -1,3 +1,5 @@
+# Heavily inspired by zms21's Youku you-get video wrapper, specifically designed for downloading duplicate-name videos off of Youku.
+
 import sys
 import os
 import re
