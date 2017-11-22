@@ -14,6 +14,6 @@ youkuscrape.py is for getting Youku metadata and downloading the video.
 
 Folders:
 
-You-Get Scraper (Youku Videos) was made by zms21. Huge thank you to him, since this gets the you-get filenames with timestamps added at the time. This prevents a file from overriding the other.
+You-Get Scraper (Youku Videos) was made by zms21. Huge thank you to him, since this gets the you-get filenames with timestamps added at the time. This prevents a file from overriding the other. You must list each link, one by line, in url_list.txt; channel links do not work.
 
-You-Get Scraper (Tudou Videos) is the same except I made it. Could not have been done were it not for zms21's Youku wrapper. :)
+You-Get Scraper (Tudou Videos) is the same except I made it. Could not have been done were it not for zms21's Youku wrapper. :) See the Youku variant for instructions on how to add links. The only accepted syntax is http://video.tudou.com/v/VIDID.html.
