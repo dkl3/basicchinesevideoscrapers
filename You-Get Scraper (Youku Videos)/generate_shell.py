@@ -1,7 +1,6 @@
-from youkuscrape import scrape_youku
-import sys
-import os
+from youkuscrape2 import Youku
 
+import sys
 if (len(sys.argv)>1):
     listfile = sys.argv[1]
 else:
@@ -14,8 +13,5 @@ f.close()
 commandfile = "run.sh"
 f = open(commandfile, 'w')
 for i in urllist:
-    f.write("you-get "+i.strip()+" -O \""+scrape_youku(i).replace(":","-")+"\"\n")
+    f.write("you-get "+i.strip()+" -O \""+Youku(i)+"\"\n")
 f.close()
-
-os.system('chmod +x run.sh')
-os.system('./run.sh')

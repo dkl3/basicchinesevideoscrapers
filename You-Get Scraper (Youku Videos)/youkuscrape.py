@@ -49,8 +49,8 @@ def scrape_youku(url):
     desc_output = "Description: " + desc
     source_output = "Original url: " + source
 
-    textfile = title + "-" + type + '-metadata.txt'
-    textfile = textfile.translate(str.maketrans("*/\\<>:\"|","--------")).strip()
+    textfile = title + "-" + type + '.txt'
+
     variableprintstring = (uploader_output + "\n" + uploaded_output + "\n" + desc_output + "\n" + source_output )
     f = open( textfile, 'w' )
     f.write(variableprintstring + "\n")
