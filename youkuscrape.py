@@ -2,48 +2,49 @@
 
 import sys
 import os
+import re
+import json
 import wget
 import urllib.request
 from bs4 import BeautifulSoup
 
 vidid = input("Enter a Youku identifier: ")
 url = 'http://www.29bc.com/plus/youku/index.php?id=' + vidid
+source = 'http://v.youku.com/v_show/id_' + vidid + '.html'
+fnameappend = '.info.json'
+jsonenc = json.JSONEncoder()
 page = urllib.request.urlopen(url)
 soup = BeautifulSoup(page, 'html.parser')
-
-desc = soup.find('div', attrs={'class': 'panel-body info-content'}).text.strip()
-
-get_info = soup.find('ul', attrs={'class': 'list-group info-content'})
-
-info = get_info.text.strip()
-
-uploaded = get_info.find("span", {"class": "v-published", "yk": "video-published"}).text.strip()
-
-uploader = get_info.find("a", {"class": "v-user", "yk": "user-name"}).text.strip()
-
 title = soup.find("strong", {"class": "v-title vtitle", "yk": "video-title"}).text.strip()
 
-source = 'http://v.youku.com/v_show/id_' + vidid + '.html'
+def Youku(url):
+    dict = {'vidid': vidid, \
+            'origurl': source, \
+            'title': title, \
+            'desc': None, \
+            'uploader': None, \
+            'uploaded': None}
 
-print("Title: " + title)
-print("Uploader: " + uploader)
-print("Upload date: " + uploaded) # In YYYY-MM-DD format.
-print("Description: " + desc)
-print("Original url: " + source)
+    dict['desc'] = soup.find('div', attrs={'class': 'panel-body info-content'}).text.strip()
+    get_info = soup.find('ul', attrs={'class': 'list-group info-content'})
+    info = get_info.text.strip()
+    dict['uploaded'] = get_info.find("span", {"class": "v-published", "yk": "video-published"}).text.strip()
+    dict['uploader'] = get_info.find("a", {"class": "v-user", "yk": "user-name"}).text.strip()
 
-title_output = "Title: " + title
-uploader_output = "Uploader: " + uploader
-uploaded_output = "Upload date: " + uploaded
-desc_output = "Description: " + desc
-source_output = "Original url: " + source
+    print("Title: " + title)
+    print("Uploader: " + dict['uploader'])
+    print("Upload date: " + dict['uploaded']) # In YYYY-MM-DD format.
+    print("Description: " + dict['desc'])
+    print("Original url: " + source)
 
-textfile = title + "-" + vidid + '-metadata.txt'
+    filename=title.translate(str.maketrans("*/\\<>:\"|","--------")).strip()+"-" + vidid + fnameappend
+    print(filename)
+    print(dict)
+    f = open(filename, 'w')
+    f.write(jsonenc.encode({dict['vidid']: dict}))
+    f.close()
+Youku(url)
 
-variableprintstring = (title_output + "\n" + uploader_output + "\n" + uploaded_output + "\n" + desc_output + "\n" + source_output )
-f = open( textfile, 'w' )
-f.write(variableprintstring + "\n")
-f.close()
-
-print('Downloading video...')
-os.system('you-get ' + source)
+print('\n' + 'Downloading video...')
+os.system('you-get ' + source + ' -O ' + title + "-" + vidid)
 print('Done!')
