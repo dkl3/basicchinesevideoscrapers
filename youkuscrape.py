@@ -46,5 +46,5 @@ def Youku(url):
 Youku(url)
 
 print('\n' + 'Downloading video...')
-os.system('you-get ' + source + ' -O ' + title + "-" + vidid)
+os.system('you-get ' + source + ' -O "' + title + '"-' + vidid)
 print('Done!')
