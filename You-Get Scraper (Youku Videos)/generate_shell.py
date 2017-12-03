@@ -1,4 +1,4 @@
-from youkuscrape2 import Youku
+from youkuscrape import Youku
 
 import sys
 if (len(sys.argv)>1):
