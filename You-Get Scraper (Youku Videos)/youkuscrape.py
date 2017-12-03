@@ -43,7 +43,7 @@ def Youku(url):
     filename=title.translate(str.maketrans("*/\\<>:\"|","--------")).strip()+"-" + vidid + fnameappend
     print(filename)
     print(dict)
-    f = open(filename, 'a')
+    f = open(filename, 'w')
     f.write(jsonenc.encode({dict['vidid']: dict}))
     f.close()
 
