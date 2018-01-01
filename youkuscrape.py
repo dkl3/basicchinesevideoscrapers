@@ -6,6 +6,7 @@ import re
 import json
 import wget
 import urllib.request
+from selenium import webdriver
 from bs4 import BeautifulSoup
 
 vidid = input("Enter a Youku identifier: ")
@@ -21,11 +22,17 @@ def Youku(url):
     dict = {'vidid': vidid, \
             'origurl': source, \
             'title': title, \
-            'desc': None, \
+            'description': None, \
             'uploader': None, \
+            'channel': None, \
             'uploaded': None}
 
-    dict['desc'] = soup.find('div', attrs={'class': 'panel-body info-content'}).text.strip()
+    browser = webdriver.PhantomJS() # be sure to sudo apt install phantomjs first!
+    browser.get(source)
+    soup2 = BeautifulSoup(browser.page_source, 'html.parser')
+
+    dict['channel'] = 'http:' + soup2.find('dl', attrs={'id': 'subscription_wrap'}).a['href']
+    dict['description'] = soup.find('div', attrs={'class': 'panel-body info-content'}).text.strip()
     get_info = soup.find('ul', attrs={'class': 'list-group info-content'})
     info = get_info.text.strip()
     dict['uploaded'] = get_info.find("span", {"class": "v-published", "yk": "video-published"}).text.strip()
@@ -33,8 +40,9 @@ def Youku(url):
 
     print("Title: " + title)
     print("Uploader: " + dict['uploader'])
+    print("Channel: " + dict['channel'])
     print("Upload date: " + dict['uploaded']) # In YYYY-MM-DD format.
-    print("Description: " + dict['desc'])
+    print("Description: " + dict['description'])
     print("Original url: " + source)
 
     filename=title.translate(str.maketrans("*/\\<>:\"|","--------")).strip()+"-" + vidid + fnameappend
