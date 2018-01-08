@@ -1,48 +1,48 @@
-# Heavily inspired by zms21's Youku you-get video wrapper, specifically designed for downloading duplicate-name videos off of Youku.
-
 import sys
 import os
 import re
-import urllib.request
+import json
 import wget
+import urllib.request
 from bs4 import BeautifulSoup
 
-def scrape_tudou(url):
-#vidid = input("Enter a Tudou identifier: ")
+def Tudou(url):
     vidid = re.search(r'(?:\/v\/)(.*)(\.html)', url, re.I).group(1)
     url = 'http://video.tudou.com/v/' + vidid + '.html'
+    fnameappend = '.info.json'
+    jsonenc = json.JSONEncoder()
     page = urllib.request.urlopen(url)
     soup = BeautifulSoup(page, 'html.parser')
-
     title = soup.find('span', attrs={'id': 'subtitle'})['title']
 
+    dict = {'vidid': vidid, \
+            'origurl': url, \
+            'title': title, \
+            'description': None, \
+            'uploader': None, \
+            'channel': None, \
+            'uploaded': None}
+
     uploader = soup.find('a', attrs={'class': 'td-play__userinfo__name'})
-    uploadername = uploader.text.strip()
-    channellink = 'http:' + uploader['href']
-    description = soup.find('div', attrs={'class': 'td-play__videoinfo__details-box__desc'}).text.strip()
-    uploaddate = soup.find('meta', attrs={'name': 'publishedtime'})['content']
+    dict['uploader'] = uploader.text.strip()
+    dict['channel'] = 'http:' + uploader['href']
+    dict['description'] = soup.find('div', attrs={'class': 'td-play__videoinfo__details-box__desc'}).text.strip()
+    dict['uploaded'] = soup.find('meta', attrs={'name': 'publishedtime'})['content']
 
-    filename=title.translate(str.maketrans("*/\\<>:\"|","--------")).strip()+" "+uploaddate
+    print('Title: ' + dict['title'])
+    print('Uploader: ' + dict['uploader'])
+    print('Channel link: ' + dict['channel'])
+    print('Description: ' + dict['description'])
+    print('Upload date: ' + dict['uploaded'])
+    print('Original url: ' + dict['origurl'])
 
-    print('Title: ' + title)
-    print('Uploader: ' + uploadername)
-    print('Channel link: ' + channellink)
-    print('Description: ' + description)
-    print('Upload date: ' + uploaddate)
-    print('Original url: ' + url)
-
-    titleout = 'Title: ' + title
-    uploaderout = 'Uploader: ' + uploadername
-    channelout = 'Channel: ' + channellink
-    descout = 'Description: ' + description
-    uploadout = 'Upload date: ' + uploaddate
-    urlout = 'Original url: ' + url
-
-    textfile = title + "-" + vidid + '-metadata.txt'
-    textfile = textfile.translate(str.maketrans("*/\\<>:\"|","--------")).strip()
-    variableprintstring = (titleout + "\n" + uploaderout + "\n" + channelout + "\n" + descout + "\n" + uploadout + "\n" + urlout)
-    f = open( textfile, 'w' )
-    f.write(variableprintstring + "\n")
+    filename=title.translate(str.maketrans("*/\\<>:\"|","--------")).strip()+"-" + vidid + fnameappend
+    print(filename)
+    print(dict)
+    f = open(filename, 'w')
+    f.write(jsonenc.encode({dict['vidid']: dict}))
     f.close()
 
-    return filename
+    vidname = title.translate(str.maketrans("*/\\<>:\"|","--------")).strip()+"-" + vidid
+
+    return vidname

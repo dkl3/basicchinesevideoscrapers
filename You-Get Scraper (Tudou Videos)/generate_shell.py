@@ -1,6 +1,5 @@
-from tudouscraper import scrape_tudou
+from tudouscraper import Tudou
 import sys
-import os
 
 if (len(sys.argv)>1):
     listfile = sys.argv[1]
@@ -14,8 +13,5 @@ f.close()
 commandfile = "run.sh"
 f = open(commandfile, 'w')
 for i in urllist:
-    f.write("you-get "+i.strip()+" -O \""+scrape_tudou(i).replace(":","-")+"\"\n")
+    f.write("you-get "+i.strip()+" -O \""+Tudou(i)+"\"\n")
 f.close()
-
-os.system('chmod +x run.sh')
-os.system('./run.sh')
