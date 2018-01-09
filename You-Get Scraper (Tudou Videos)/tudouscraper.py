@@ -3,6 +3,7 @@ import os
 import re
 import json
 import wget
+import retry
 import urllib.request
 from bs4 import BeautifulSoup
 
@@ -11,7 +12,8 @@ def Tudou(url):
     url = 'http://video.tudou.com/v/' + vidid + '.html'
     fnameappend = '.info.json'
     jsonenc = json.JSONEncoder()
-    page = urllib.request.urlopen(url)
+    page = urllib.request.urlopen(url).read()
+    retry(page.URLError, tries=4, delay=3, backoff=2)
     soup = BeautifulSoup(page, 'html.parser')
     title = soup.find('span', attrs={'id': 'subtitle'})['title']
 
