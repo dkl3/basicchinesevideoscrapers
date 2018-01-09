@@ -3,7 +3,11 @@ import os
 import re
 import json
 import wget
-import urllib.request
+import retry
+import urllib3
+from requests.packages.urllib3.util import Retry
+from requests.adapters import HTTPAdapter
+from requests import Session, exceptions
 from bs4 import BeautifulSoup
 
 def Tudou(url):
@@ -11,9 +15,15 @@ def Tudou(url):
     url = 'http://video.tudou.com/v/' + vidid + '.html'
     fnameappend = '.info.json'
     jsonenc = json.JSONEncoder()
-    page = urllib.request.urlopen(url)
+    s = Session()
+    s.mount('https://', HTTPAdapter(
+    max_retries=Retry(total=5, status_forcelist=[500, 502, 503])
+        )
+    )
+
+    page = s.get(url).text
     soup = BeautifulSoup(page, 'html.parser')
-    title = soup.find('span', attrs={'id': 'subtitle'})['title']
+    title = soup.find('span', attrs={'id': 'subtitle'}).text.strip()
 
     dict = {'vidid': vidid, \
             'origurl': url, \
@@ -25,9 +35,9 @@ def Tudou(url):
 
     uploader = soup.find('a', attrs={'class': 'td-play__userinfo__name'})
     dict['uploader'] = uploader.text.strip()
-    dict['channel'] = 'http:' + uploader['href']
+    dict['channel'] = uploader['href']
     dict['description'] = soup.find('div', attrs={'class': 'td-play__videoinfo__details-box__desc'}).text.strip()
-    dict['uploaded'] = soup.find('meta', attrs={'name': 'publishedtime'})['content']
+    dict['uploaded'] = soup.find('div', attrs={'class': 'td-play__videoinfo__details-box__time'}).text.strip()
 
     print('Title: ' + dict['title'])
     print('Uploader: ' + dict['uploader'])
