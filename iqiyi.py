@@ -23,7 +23,7 @@ def Iqiyi(url):
             'channel':None,\
             'uploaded': None}
 
-    dict['description'] = soup.find('p', attrs={'id': 'widget-vshort-lesswrap'}).text.strip()
+    dict['description'] = soup.find('meta', attrs={'itemprop': 'description'})['content']
     dict['uploaded'] = soup.find('meta', attrs={'itemprop': 'uploadDate'})['content']
 
     retrieve_uploader = soup.find('a', attrs={'class': 'mod-dyDs-name-link'})
@@ -45,8 +45,12 @@ def Iqiyi(url):
     f.close()
 
     print ('Downloading thumbnail...')
-    thumbloc = soup.find('meta', attrs={'property': 'og:image'})['content']
+    thumbloc = soup.find('meta', attrs={'itemprop': 'thumbnailUrl'})['content']
     thumbdown = wget.download(thumbloc)
-    os.rename(thumbdown,title+'.jpg')
+    os.rename(thumbdown,title+'-'+vidid+'.jpg')
+
+    print('\n' + 'Downloading video...')
+    os.system('you-get ' + url + ' -O "' + title + '"-' + vidid)
+    print('Done!')
 
 Iqiyi(url)
