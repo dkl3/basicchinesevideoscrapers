@@ -43,6 +43,7 @@ def Youku(url):
     dict['uploader'] = soup.find("dd", {"class": "dayu-title"}).text.strip()
 
     print("Title: " + title)
+    print("URL: " + url)
     print("Uploader: " + dict['uploader'])
     print("Channel: " + dict['channel'])
     print("Upload date: " + dict['uploaded']) # In YYYY-MM-DD format.
