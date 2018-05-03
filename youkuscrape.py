@@ -39,7 +39,7 @@ def Youku(url):
             'uploaded': None}
 
     dict['channel'] = 'http:' + soup.find('span', attrs={'id': 'module_basic_sub'}).a['href']
-    dict['uploaded'] = soup.find("span", {"class": "bold mr3"}).text.strip().replace('上传于 ','')
+    dict['uploaded'] = soup.find("span", {"class": "video-status"}).text.strip().replace('上传于 ','')
     dict['uploader'] = soup.find("dd", {"class": "dayu-title"}).text.strip()
 
     print("Title: " + title)
