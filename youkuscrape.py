@@ -12,8 +12,7 @@ from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 
-vidid = input("Enter a Youku identifier: ")
-url = 'http://v.youku.com/v_show/id_' + vidid + '.html'
+url = 'http://v.youku.com/v_show/id_' + input("Enter a Youku identifier: ") + '.html'
 fnameappend = '.info.json'
 jsonenc = json.JSONEncoder()
 browser = webdriver.PhantomJS() # be sure to sudo apt install phantomjs first!
