@@ -21,11 +21,10 @@ browser.set_page_load_timeout(10)
 while True:
     try:
         browser.get(url)
+        break
     except TimeoutException:
         print("Timeout, retrying...")
         continue
-    else:
-        break
 
 soup = BeautifulSoup(browser.page_source, 'html.parser')
 title = soup.find("meta", {"name": "irTitle"})['content']
