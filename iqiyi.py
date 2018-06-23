@@ -23,7 +23,7 @@ def Iqiyi(url):
             'channel':None,\
             'uploaded': None}
 
-    dict['description'] = soup.find('meta', attrs={'itemprop': 'description'})['content']
+    dict['description'] = soup.find('p', attrs={'itemprop': 'description'})['daat-init-moredesc']
     dict['uploaded'] = soup.find('meta', attrs={'itemprop': 'uploadDate'})['content']
 
     retrieve_uploader = soup.find('a', attrs={'class': 'mod-dyDs-name-link'})
